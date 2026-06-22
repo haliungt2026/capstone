@@ -45,7 +45,7 @@ def generate_sql(question: str, history: list = []) -> str:
     messages.append({"role": "user", "content": question})
 
     message = client.messages.create(
-        model="claude-opus-4-5",
+        model="claude-haiku-4-5-20251001",
         max_tokens=512,
         system=f"""Та PostgreSQL мэдээллийн сангийн SQL бичигч юм.
 Зөвхөн цэвэр SQL query буцаана. Markdown, тайлбар, тайлал огт хэрэггүй.
@@ -69,7 +69,7 @@ SQL: {sql}
     })
 
     message = client.messages.create(
-        model="claude-opus-4-5",
+        model="claude-haiku-4-5-20251001",
         max_tokens=256,
         system="Та хүргэлтийн компанийн мэдээллийн шинжээч юм. Монгол хэлээр товч, ойлгомжтой хариулна уу.",
         messages=messages
