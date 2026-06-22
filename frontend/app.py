@@ -16,19 +16,34 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+html, body, [class*="css"], * { font-family: 'Plus Jakarta Sans', sans-serif !important; }
 .stApp { background-color: #F7F8FA; }
 .app-header { display: flex; align-items: center; gap: 12px; padding: 24px 0 16px 0; border-bottom: 1px solid #E5E7EB; margin-bottom: 20px; }
 .app-logo { width: 40px; height: 40px; background: #1A1A2E; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-.app-title { font-size: 18px; font-weight: 600; color: #1A1A2E; margin: 0; }
+.app-title { font-size: 18px; font-weight: 700; color: #1A1A2E; margin: 0; }
 .app-subtitle { font-size: 13px; color: #6B7280; margin: 0; }
 .stat-card { background: white; border: 1px solid #E5E7EB; border-radius: 12px; padding: 16px; text-align: center; }
-.stat-value { font-size: 24px; font-weight: 600; color: #1A1A2E; }
+.stat-value { font-size: 24px; font-weight: 700; color: #1A1A2E; }
 .stat-label { font-size: 12px; color: #6B7280; margin-top: 4px; }
 .stat-delivered { color: #10B981; }
 .stat-delayed { color: #F59E0B; }
 .stat-cancelled { color: #EF4444; }
+div[data-testid="stButton"] button {
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    color: #374151;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 14px;
+    text-align: left;
+}
+div[data-testid="stButton"] button:hover {
+    border-color: #1A1A2E;
+    color: #1A1A2E;
+    background: #F9FAFB;
+}
 #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
@@ -71,15 +86,15 @@ if not st.session_state.messages:
     st.markdown('<div style="text-align:center; padding: 20px 0 16px 0; color: #9CA3AF; font-size: 14px;">Мэдээллийн сангаас асуулт асууна уу</div>', unsafe_allow_html=True)
     cols = st.columns(2)
     suggestions = [
-        "🚗  Хэдэн жолооч байна?",
-        "📦  Өнөөдөр хэдэн захиалга байна?",
-        "✅  Хүргэгдсэн захиалгын тоо?",
-        "⏱️  Хойшилсон захиалгууд?",
+        ("Хэдэн жолооч байна", "Хэдэн жолооч байна?"),
+        ("Өнөөдөр хэдэн захиалга байна", "Өнөөдөр хэдэн захиалга байна?"),
+        ("Хүргэгдсэн захиалгын тоо", "Хүргэгдсэн захиалгын тоо?"),
+        ("Хойшилсон захиалгууд", "Хойшилсон захиалгууд юу?"),
     ]
-    for i, sug in enumerate(suggestions):
+    for i, (label, question) in enumerate(suggestions):
         with cols[i % 2]:
-            if st.button(sug, use_container_width=True, key=f"sug_{i}"):
-                st.session_state["prefill"] = sug.split("  ")[1]
+            if st.button(label, use_container_width=True, key=f"sug_{i}"):
+                st.session_state["prefill"] = question
                 st.rerun()
 
 if "prefill" in st.session_state:
