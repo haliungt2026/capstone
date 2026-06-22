@@ -47,6 +47,15 @@ div[data-testid="stButton"] button:hover {
     color: #1A1A2E;
     background: #F9FAFB;
 }
+[data-testid="stChatMessageContent"] h1,
+[data-testid="stChatMessageContent"] h2,
+[data-testid="stChatMessageContent"] h3,
+[data-testid="stChatMessageContent"] h4 {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #111827 !important;
+    margin: 6px 0 2px 0 !important;
+}
 #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
