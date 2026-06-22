@@ -20,14 +20,34 @@ def execute_query(sql: str) -> dict:
     finally:
         conn.close()
 
-def create_session() -> int:
+def create_session(user_id: str = None, channel: str = "web") -> int:
     conn = get_connection()
     try:
         cur = conn.cursor()
-        cur.execute("INSERT INTO khaliun.sessions DEFAULT VALUES RETURNING id")
+        cur.execute(
+            "INSERT INTO khaliun.sessions (user_id, channel) VALUES (%s, %s) RETURNING id",
+            (user_id, channel)
+        )
         session_id = cur.fetchone()[0]
         conn.commit()
         return session_id
+    finally:
+        conn.close()
+
+def get_session_messages(session_id: int, limit: int = 50) -> list:
+    conn = get_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute(
+            """SELECT role, content, created_at 
+               FROM khaliun.messages 
+               WHERE session_id = %s 
+               ORDER BY created_at ASC 
+               LIMIT %s""",
+            (session_id, limit)
+        )
+        rows = cur.fetchall()
+        return [{"role": r[0], "content": r[1], "created_at": str(r[2])} for r in rows]
     finally:
         conn.close()
 

@@ -1,10 +1,13 @@
 import os
 import uvicorn
-from fastapi import FastAPI, HTTPException
+from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from database import execute_query, create_session, save_message, save_llm_log
-from llm import generate_sql, generate_response
+from database import execute_query
+from routers import message, stats
+from facebook import handle_fb_message, FB_VERIFY_TOKEN
+
+load_dotenv()
 
 app = FastAPI(title="Capstone NL2SQL API")
 
@@ -15,45 +18,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class QueryRequest(BaseModel):
-    question: str
-    session_id: int = None
+app.include_router(message.router)
+app.include_router(stats.router)
 
-@app.post("/api/query")
-def handle_query(req: QueryRequest):
-    # Session үүсгэх эсвэл ашиглах
-    session_id = req.session_id or create_session()
+@app.get("/webhook", tags=["Facebook"])
+def fb_verify(request: Request):
+    params = dict(request.query_params)
+    if params.get("hub.mode") == "subscribe" and params.get("hub.verify_token") == FB_VERIFY_TOKEN:
+        return int(params["hub.challenge"])
+    raise HTTPException(status_code=403, detail="Verify token буруу")
 
-    # Хэрэглэгчийн асуултыг хадгалах
-    save_message(session_id, "user", req.question)
+@app.post("/webhook", tags=["Facebook"])
+async def fb_webhook(request: Request):
+    body = await request.json()
+    if body.get("object") == "page":
+        for entry in body.get("entry", []):
+            for event in entry.get("messaging", []):
+                sender_id = event["sender"]["id"]
+                text = event.get("message", {}).get("text", "").strip()
+                if text:
+                    await handle_fb_message(sender_id, text)
+    return {"status": "ok"}
 
-    # SQL үүсгэх
-    sql = generate_sql(req.question)
-
-    # DB execute
-    try:
-        result = execute_query(sql)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"SQL алдаа: {str(e)}")
-
-    # Хариу үүсгэх
-    response = generate_response(req.question, sql, result)
-
-    # Хариутыг хадгалах
-    save_message(session_id, "assistant", response)
-
-    # LLM log хадгалах
-    save_llm_log(session_id, req.question, sql, result, response)
-
-    return {
-        "session_id": session_id,
-        "question": req.question,
-        "sql": sql,
-        "result": result,
-        "response": response
-    }
-
-@app.post("/sql")
+@app.post("/sql", tags=["Database"])
 def run_raw_sql(payload: dict):
     sql = payload.get("sql", "").strip()
     if not sql:
