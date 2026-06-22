@@ -19,10 +19,13 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 html, body, [class*="css"], * { font-family: 'Plus Jakarta Sans', sans-serif !important; }
 .stApp { background-color: #F7F8FA; }
-.app-header { display: flex; align-items: center; gap: 12px; padding: 24px 0 16px 0; border-bottom: 1px solid #E5E7EB; margin-bottom: 20px; }
-.app-logo { width: 40px; height: 40px; background: #1A1A2E; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-.app-title { font-size: 18px; font-weight: 700; color: #1A1A2E; margin: 0; }
-.app-subtitle { font-size: 13px; color: #6B7280; margin: 0; }
+.app-header { display: flex; align-items: center; gap: 16px; padding: 28px 0 20px 0; border-bottom: 1px solid #E5E7EB; margin-bottom: 24px; }
+.app-logo { width: 46px; height: 46px; background: linear-gradient(135deg, #1A1A2E 0%, #2D3A6B 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 2px 8px rgba(26,26,46,0.18); flex-shrink: 0; }
+.app-header-text { display: flex; flex-direction: column; gap: 3px; }
+.app-title { font-size: 20px; font-weight: 700; color: #111827; margin: 0; letter-spacing: -0.3px; }
+.app-subtitle { font-size: 12px; color: #9CA3AF; margin: 0; font-weight: 500; letter-spacing: 0.2px; text-transform: uppercase; }
+.app-badge { margin-left: auto; display: flex; align-items: center; gap: 6px; background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 20px; padding: 5px 12px; font-size: 12px; font-weight: 600; color: #15803D; }
+.app-badge-dot { width: 7px; height: 7px; background: #22C55E; border-radius: 50%; }
 .stat-card { background: white; border: 1px solid #E5E7EB; border-radius: 12px; padding: 16px; text-align: center; }
 .stat-value { font-size: 24px; font-weight: 700; color: #1A1A2E; }
 .stat-label { font-size: 12px; color: #6B7280; margin-top: 4px; }
@@ -51,9 +54,13 @@ div[data-testid="stButton"] button:hover {
 st.markdown("""
 <div class="app-header">
     <div class="app-logo">🚚</div>
-    <div>
+    <div class="app-header-text">
         <p class="app-title">Capstone</p>
         <p class="app-subtitle">Хүргэлтийн мэдээллийн систем</p>
+    </div>
+    <div class="app-badge">
+        <div class="app-badge-dot"></div>
+        Идэвхтэй
     </div>
 </div>
 """, unsafe_allow_html=True)
